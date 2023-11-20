@@ -9,18 +9,7 @@
     <title></title>
 </head>
 <body>
-    <!-- vm1 -->
-    <div id="app">
-        <h1>{{ name }}</h1>
-        <input type="text" v-model="name">
-    </div>
-
-    <!-- vm2 -->
-    <div id="app2">
-        <h1>{{ name }}</h1>
-        <input type="text" v-model="name">
-    </div>
-    
+   <div id="app"></div> 
 
 
 
@@ -45,26 +34,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
-
-        const dataObj = {
-            name : "Jhon"
-        };
-
-        //component 1
-        const vm1 = Vue.createApp({
-            data (){
-                return { ...dataObj}
+        const vm = Vue.createApp({
+            template: `<div>{{ greeting }}</div>`,
+            data () {
+                return {
+                    greeting: 'Hello Vue.js!'
+                }
             }
         }).mount('#app');
-
-        //component 2
-        const vm2 = Vue.createApp({
-            data (){
-                return { ...dataObj}
-            }
-        }).mount('#app2');
-
-        vm1.$data.name = "阿不就";
     </script>
 </body>
 </html>
