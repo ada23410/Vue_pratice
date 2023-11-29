@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title></title>
+    <style>
+        #app {
+            display: block;
+            padding: 1rem;
+            padding-top: 2rem;
+            font-size: 1rem;
+        }
+
+        .book {
+            margin-bottom: 2rem;
+        }
+
+        .child-app {
+            padding: 1rem;
+            background-color: #ddd;
+            margin-top: 1rem;
+            line-height: 2;
+        }
+
+        li {
+            list-style-type: square;
+            list-style-position: inside;
+        }
+
+        input {
+            width: 65%;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            padding: 2px 3px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="child-app block"></div>
+        <!-- 這裡透過v-bind傳入className -->
+        <my-component :class="className" @click="greeting"></my-component>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data (){
+                return{
+                    className: "block"
+                }
+            },
+            methods: {
+                greeting(){
+                    alert('Hello Vue!');
+                }
+            }
+        });
+
+        // 注意，子元件身上並未有＄emit觸發事件的行為
+        app.component("my-component",{
+            template:`
+                <div class="child-app"></div>`,
+        });
+
+
+        app.mount('#app');
+    </script>
+</body>
+</html>
