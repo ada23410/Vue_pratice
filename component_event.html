@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title></title>
+    <style>
+        #app {
+            display: block;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        #app>ul>li {
+            margin-left: 0;
+        }
+
+        ul>li {
+            display: block;
+            margin-left: 1rem;
+            margin-bottom: 0.5rem;
+            padding: 8px;
+            background-color: #eee;
+        }
+
+        h2.has-child {
+            cursor: pointer;
+        }
+
+        h2.has-child::before {
+            content: '+ ';
+        }
+
+        h2.has-child.is-open::before {
+            content: '- ';
+        }
+
+        a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 直接將v-for的book物件作為props傳遞 -->
+        <!-- 並監聽自訂的update事件 -->
+        <my-component v-for="(book, idx) in books" :key="idx" v-bind="book" @update="updateInfo"></my-component>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    books: [
+                        {
+                            id: "a0001",
+                            name: "0陷阱！0誤解！8天重新認識Javascript!",
+                            author: "kuro Hsu",
+                            publishedAt: "2019/09"
+                        },
+                        {
+                            id: "a0002",
+                            name: "重新認識Vue.js",
+                            author: "kuro Hsu",
+                            publishedAt: "2021/02"
+                        }
+                    ]
+                }
+            },
+            methods: {
+                updateInfo(val) {
+                    // 註：如果是 Vue 2.x 要透過 this.$set 來更新
+                    // 如: this.$set(this.books, idx, val);
+
+                    // Vue 3.x 則無此限制
+                    const idx = this.books.findIndex(d => d.id === val.id);
+                    this.books[idx] = val;
+                }
+            }
+        });
+
+        app.component('my-component', {
+            template: `
+            <div class="child-app">
+                <div>書名: <input type="text" v-model="bookInfo.name"></div>
+                <div>作者: <input type="text" v-model="bookInfo.author"></div>
+                <div>出版日: <input type="text" v-model="bookInfo.publishedAt"></div>
+            </div>`,
+            props:["id", "name", "author", "publishedAt"],
+            data(){
+                return{
+                    bookInfo:{
+                        id: this.id,
+                        name: this.name,
+                        author: this.author,
+                        publishedAt: this.publishedAt
+                    }
+                }
+            },
+            watch: {
+                bookInfo:{
+                    // 注意！ 由於 bookInfo 物件必須加上 deep: true 
+                    // 才能做物件的深層更新偵測 
+                    deep: true,
+                    handler(val) {
+                        this.$emit('update', val);
+                    }
+                }
+            }
+        });
+
+
+        app.mount('#app');
+    </script>
+</body>
+
+</html>

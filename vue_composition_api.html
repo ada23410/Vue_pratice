@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title></title>
+</head>
+
+<body>
+    <div id="app">
+        <h1>Total: {{ sum }}</h1>
+        <button-counter @add-sum="plus"></button-counter>
+        <button-counter @add-sum="plus"></button-counter>
+        <button-reset></button-reset>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const sum = ref(0);
+        const plus = () => sum.value++;
+        const reset = () => sum.value = 0;
+
+        //父曾根元件
+        const app = Vue.createApp({
+            setup(){
+                //將魔滿用得到的sum,plus傳回去
+                return{
+                    sum,
+                    plus
+                };
+            }
+        });
+        
+        //子元件<button-counter>
+        app.component("button-counter", {
+            template: `<button @click="plus">You clicked me {{ count }} times.</button>`,
+            setup(props, {emit}){
+                const count = ref(0);
+
+                //透過emit傳遞自定義事件
+                const plus = () =>{
+                    count.value++
+                    emit('add-sum');
+                }
+
+                //觀察sum的變化，若sum為0代表要reset count的內容
+                watch(sum, v => count.value = v === 0 ? 0 : count.value);
+                // Vue.watch(() => sum.value, v => count.value = v === 0 ? 0 : count.value);
+
+                //將模板用到的count,plus回傳出去
+                return{
+                    count,
+                    plus
+                }
+            }
+        });
+
+        //子元件<button-reset>
+        app.component('button-reset',{
+            template: `<button @click="reset">reset</button>`,
+            setup(){
+
+                //將模板用到的reset回傳出去
+                return{
+                    reset
+                }
+            }
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+
+</html>
