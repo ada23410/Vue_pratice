@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title></title>
+    <style>
+        #app {
+            position: relative;
+            display: block;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        button {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .flexbox-wrapper {
+            position: relative;
+            overflow: hidden;
+            transition: height 1s;
+            min-height: 35px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .flexbox-body {
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+
+        .user-block {
+            overflow: hidden;
+            background: #eee;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            width: 420px;
+        }
+
+        .user-block img {
+            width: 100px;
+            height: 100px;
+            float: left;
+            margin: 0 1rem 0 0;
+        }
+
+        .user-block .wraps {
+            float: left;
+            margin-top: 1rem;
+            margin-left: 0.7rem;
+            font-size: 0.9rem;
+        }
+
+        .user-block h2 {
+            font-weight: 500;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .loading {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .loading img {
+            border: none;
+        }
+
+        .v-enter-active,
+        .v-leave-active {
+            transition: opacity 1s;
+        }
+
+        .v-enter-from,
+        .v-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 由：style控制容器高度 -->
+        <button @click="getUserInfo">取得隨機 User 資訊</button>
+
+        <div class="flexbox-wrapper" :style="{height: height+'px'}">
+            <div class="flexbox-body" ref="content">
+                <div class="user-block" v-if="userInfo.name">
+                    <h2>{{ userInfo.name }} / @{{ userInfo.username }}</h2>
+
+                    <img src="https://dummyimage.com/200x200/666/fff" alt="dummyimage">
+                    <div class="wraps">
+                        <p>{{ userInfo.company.name }}</p>
+                        <p>{{ userInfo.phone }}</p>
+                        <p>{{ userInfo.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- hooks event 需搭配 v-on使用 -->
+        <transition @before-enter="beforeEnter" @before-leave="beforeLeave">
+            <!-- loading 圖 -->
+            <div v-if="isLoading" class="loading">
+                <img src="https://raw.githubusercontent.com/kurotanshi/vue-functional-demo/master/loading.gif"
+                    alt="loading">
+            </div>
+        </transition>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    height: 0,
+                    userInfo: {},
+                    isLoading: false
+                }
+            },
+            methods: {
+                getRandomUserId() {
+                    // 1 ~ 10
+                    //隨機從1-10取出一組數字作為user id
+                    return Math.floor(Math.random() * 10) + 1;
+                },
+                async getUserInfo() {
+                    //從jsonlaceholder取得隨機假資料
+                    this.isLoading = true;
+                    this.userInfo = {};
+                    const userId = this.getRandomUserId();
+
+                    const res = await fetch('https://jsonplaceholder.typicode.com/users/' + userId)
+                        .then((response) => response.json())
+                        .then((json) => json);
+
+                    // 加上延遲，避免太快看不到 loading
+                    window.setTimeout(() => {
+                        this.isLoading = false;
+                        this.userInfo = res;
+                    }, 3000);
+
+                },
+                beforeEnter() {
+                    // 開始執行動畫前，將文字區塊的高度歸零
+                    this.height = 0;
+                },
+                beforeLeave() {
+                    // 取得隨機文字後，為確保資料與畫面同步，加上nextTick
+                    // 並透過getBoundingClientRect()來取得DOM實際高度
+                    this.$nextTick(() => {
+                        // $refs取得實際DOM
+                        this.height = this.$refs.content.getBoundingClientRect().height;
+                    })
+                },
+            },
+        });
+
+        app.mount("#app");
+    </script>
+</body>
+
+</html>
